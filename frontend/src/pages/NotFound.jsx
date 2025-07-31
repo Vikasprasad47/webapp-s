@@ -1,64 +1,60 @@
 import { useNavigate } from 'react-router-dom';
-import { FiAlertTriangle, FiArrowLeft, FiHome } from 'react-icons/fi';
+import { FiAlertCircle, FiHome, FiArrowLeft } from 'react-icons/fi';
 
 const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      {/* Custom Width Container - Adjust max-w-[] value as needed */}
-      <div className="w-full max-w-[480px] bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-        
-        {/* Visual Header with Gradient */}
-        <div className="bg-gradient-to-br from-amber-50 to-amber-100 py-10 px-8 text-center">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-16">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
+
+        {/* Header */}
+        <div className="bg-gradient-to-br from-red-100 via-red-200 to-red-300 py-10 px-8 text-center border-b border-red-300">
           <div className="flex justify-center mb-5">
             <div className="relative">
-              <div className="absolute -inset-2 bg-amber-200 rounded-full opacity-20 blur-sm"></div>
-              <FiAlertTriangle className="relative text-5xl text-amber-600" />
+              <div className="absolute -inset-2 bg-red-400 rounded-full blur-xl opacity-20"></div>
+              <FiAlertCircle className="relative text-6xl text-red-600" />
             </div>
           </div>
-          
-          {/* Typography Hierarchy */}
-          <div className="space-y-2">
-            <h1 className="text-[77px] font-bold text-gray-900 leading-none">404</h1>
-            <div className="w-20 h-0.5 bg-amber-400/80 mx-auto"></div>
-            <h2 className="text-lg font-medium text-gray-700 uppercase tracking-[0.15em] mt-3">
-              Page Not Found
-            </h2>
-          </div>
+
+          <h1 className="text-[64px] font-extrabold leading-none tracking-tight text-red-700">
+            404
+          </h1>
+          <p className="mt-2 text-[15px] uppercase tracking-widest font-semibold text-red-500">
+            Not that kind of hidden page
+          </p>
         </div>
 
-        {/* Content Area */}
-        <div className="p-8">
-          <p className="text-gray-600 mb-10 text-center text-[15px] leading-relaxed max-w-[300px] mx-auto">
-            The page you requested cannot be located. It may have been moved or no longer exists.
+        {/* Body */}
+        <div className="px-8 py-6 text-center">
+          <p className="text-gray-600 text-[15px] leading-relaxed mb-8">
+            The page you’re looking for doesn’t exist, or maybe it’s just too hot to handle.
           </p>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => navigate(-1)}
-              className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50/80 transition-colors"
+              className="flex items-center justify-center gap-2 px-5 py-3.5 border border-red-300 rounded-xl text-red-600 hover:bg-red-50 transition"
             >
-              <FiArrowLeft className="text-gray-500" />
-              <span>Go Back</span>
+              <FiArrowLeft />
+              Go Back
             </button>
-            
+
             <button
               onClick={() => navigate('/')}
-              className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 bg-gray-900 rounded-xl text-white font-medium hover:bg-gray-800 transition-colors"
+              className="flex items-center justify-center gap-2 px-5 py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition"
             >
               <FiHome />
-              <span>Home</span>
+              Home
             </button>
           </div>
         </div>
-        
+
         {/* Footer */}
-        <div className="bg-gray-50 px-6 py-4 text-center border-t border-gray-100">
-          <p className="text-xs text-gray-500 tracking-wide">
-            © {new Date().getFullYear()} Your Brand • 
-            <a href="/support" className="text-gray-700 font-medium hover:underline ml-1">
+        <div className="bg-red-50 px-6 py-4 text-center border-t border-red-200">
+          <p className="text-xs text-red-400">
+            © {new Date().getFullYear()} <span className="font-semibold">RedVibe™</span> • 
+            <a href="/support" className="ml-1 hover:underline text-red-600">
               Contact Support
             </a>
           </p>
