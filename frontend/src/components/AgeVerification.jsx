@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaLock } from "react-icons/fa";
 
@@ -10,19 +10,18 @@ const months = [
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
 
-const AgeVerification = () => {
-  const [isVerified, setIsVerified] = useState(false);
+const AgeVerification = ({
+  isVerified,
+  setIsVerified,
+  confirm,
+  cancel,
+  close,
+}) => {
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
 
-  useEffect(() => {
-    const verified = localStorage.getItem("ageVerified");
-    if (verified === "true") setIsVerified(true);
-    else document.body.classList.add("overflow-hidden");
-
-    return () => document.body.classList.remove("overflow-hidden");
-  }, []);
+  if (isVerified) return null;
 
   const calculateAge = (d, m, y) => {
     const birthDate = new Date(`${m + 1}/${d}/${y}`);
@@ -40,14 +39,18 @@ const AgeVerification = () => {
     const age = calculateAge(day, month, year);
     if (age >= 18) {
       localStorage.setItem("ageVerified", "true");
-      setIsVerified(true);
-      document.body.classList.remove("overflow-hidden");
+      if (confirm) confirm();
+      else setIsVerified(true);
     } else {
-      window.location.href = "https://www.google.com";
+      if (cancel) cancel();
+      else window.location.href = "https://www.google.com";
     }
   };
 
-  if (isVerified) return null;
+  const handleClose = () => {
+    if (close) close();
+    else setIsVerified(false);
+  };
 
   return (
     <AnimatePresence>
@@ -64,11 +67,11 @@ const AgeVerification = () => {
           exit={{ scale: 0.92, opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="absolute top-4 right-4 text-[#b2927b]">
-            <FaLock size={18} />
+          <div className="absolute top-4 right-4 text-[#b2927b] cursor-pointer" onClick={handleClose} title="Close">
+            {/* You can replace this with a close icon if you want */}
+            ✕
           </div>
 
-          {/* Headline */}
           <div className="text-center mb-4">
             <h2 className="text-2xl sm:text-3xl font-serif font-semibold text-[#3f342e]">
               Are You 18 or Older?
@@ -78,7 +81,6 @@ const AgeVerification = () => {
             </p>
           </div>
 
-          {/* Birthday Input */}
           <div className="grid grid-cols-3 gap-2 mb-6">
             <select
               className="bg-white border border-[#e0d9d1] text-[#4a3f35] text-sm rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#a61e4d]"
@@ -120,23 +122,18 @@ const AgeVerification = () => {
             </select>
           </div>
 
-          {/* Terms & Conditions */}
           <div className="text-[#6d6157] text-xs leading-relaxed text-left font-serif space-y-2 mb-6">
             <p>
-              By entering, you certify that you are at least 18 years old and agree to abide by our
-              Terms of Use and Privacy Policy.
+              By entering, you certify that you are at least 18 years old and agree to abide by our Terms of Use and Privacy Policy.
             </p>
             <p>
-              This website may include explicit visual, textual, and audio content that is
-              inappropriate for minors. Viewer discretion is advised.
+              This website may include explicit visual, textual, and audio content that is inappropriate for minors. Viewer discretion is advised.
             </p>
             <p>
-              We take no responsibility for any consequences that may result from unauthorized access.
-              Misrepresenting your age may be illegal and could result in legal action.
+              We take no responsibility for any consequences that may result from unauthorized access. Misrepresenting your age may be illegal and could result in legal action.
             </p>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleVerify}
@@ -145,7 +142,10 @@ const AgeVerification = () => {
               I Am 18+
             </button>
             <button
-              onClick={() => (window.location.href = "https://www.google.com")}
+              onClick={() => {
+                if (cancel) cancel();
+                else window.location.href = "https://www.google.com";
+              }}
               className="border border-[#a61e4d] text-[#a61e4d] text-sm font-medium py-2 px-4 rounded-md transition duration-200 hover:bg-[#fcebef] focus:outline-none"
             >
               No, I'm Not
