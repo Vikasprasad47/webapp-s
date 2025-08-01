@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHeart, FaRegHeart, FaPlay, FaStar, FaFilter, FaTimes } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaStar, FaFilter, FaTimes } from 'react-icons/fa';
+import { FaPlay } from "react-icons/fa6";
 import { GiClothes, GiAnubis, GiNinjaHead, GiTeacher, GiNurseFemale, GiPoliceOfficerHead } from 'react-icons/gi';
 import { BsCollectionPlay, BsPeopleFill, BsGlobe, BsCameraReels, BsCameraVideo } from 'react-icons/bs';
 import { SiAnilist } from 'react-icons/si';
@@ -228,7 +229,7 @@ const Home = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Categories Section */}
-      <div className="sticky -top-30 z-10 bg-white shadow-sm px-6 py-4">
+      <div className="sticky -top-35 z-10 bg-white shadow-sm px-6 py-4">
         <div className="flex space-x-4 overflow-x-auto no-scrollbar pb-2 hide-scrollbar">
           {basicCategories.map(category => (
             <motion.button
