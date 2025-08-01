@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHeart, FaRegHeart, FaPlay, FaStar, FaFilter } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaPlay, FaStar, FaFilter, FaTimes } from 'react-icons/fa';
 import { GiClothes, GiAnubis, GiNinjaHead, GiTeacher, GiNurseFemale, GiPoliceOfficerHead } from 'react-icons/gi';
 import { BsCollectionPlay, BsPeopleFill, BsGlobe, BsCameraReels, BsCameraVideo } from 'react-icons/bs';
 import { SiAnilist } from 'react-icons/si';
@@ -134,7 +134,7 @@ const Home = () => {
           channel: model.name,
           views: `${Math.floor(Math.random() * 500) + 50}K views`,
           timestamp: timestamps[i % timestamps.length],
-          thumbnail: `https://picsum.photos/seed/${i + 100}/400/225`,
+          thumbnail: `https://picsum.photos/seed/${i + 100}/500/300`,
           duration: durations[i % durations.length],
           modelId: model.id,
           rating: (Math.random() * 0.7 + 4.3).toFixed(1),
@@ -206,7 +206,10 @@ const Home = () => {
         ? prev.filter(f => f !== filter) 
         : [...prev, filter]
     );
-    setCurrentFilterModal(null);
+  };
+
+  const clearAllFilters = () => {
+    setActiveFilters([]);
   };
 
   // Subscription section
@@ -223,10 +226,10 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="bg-gray-50 min-h-screen">
       {/* Categories Section */}
-      <div className="sticky -top-30 z-10 bg-white dark:bg-gray-800 shadow-sm px-6 py-4">
-        <div className="flex space-x-4 overflow-x-auto no-scrollbar pb-2">
+      <div className="sticky -top-30 z-10 bg-white shadow-sm px-6 py-4">
+        <div className="flex space-x-4 overflow-x-auto no-scrollbar pb-2 hide-scrollbar">
           {basicCategories.map(category => (
             <motion.button
               key={category.id}
@@ -237,8 +240,8 @@ const Home = () => {
               }}
               className={`flex items-center px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-colors ${
                 selectedCategory === category.id && !selectedModel
-                  ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
               }`}
             >
               <span className="mr-2">{category.icon}</span>
@@ -249,33 +252,39 @@ const Home = () => {
 
         {/* Filter Cards - Always Visible */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-          {filterCategories.map((category, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setCurrentFilterModal(category)}
-              className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 cursor-pointer"
-            >
-              <div className="flex items-center">
-                <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-600 mr-3">
-                  {category.icon}
+          {filterCategories.map((category, i) => {
+            const activeFiltersInCategory = activeFilters.filter(f => 
+              category.options.some(o => o.name === f)
+            );
+            
+            return (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setCurrentFilterModal(category)}
+                className={`bg-white p-4 rounded-lg shadow-sm border cursor-pointer ${
+                  activeFiltersInCategory.length > 0 
+                    ? 'border-pink-500 bg-pink-50' 
+                    : 'border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                <div className="flex items-center">
+                  <div className="p-2 rounded-full bg-gray-100 mr-3">
+                    {category.icon}
+                  </div>
+                  <h3 className="font-medium text-gray-900">{category.title}</h3>
                 </div>
-                <h3 className="font-medium text-gray-900 dark:text-white">{category.title}</h3>
-              </div>
-              {activeFilters.some(f => category.options.some(o => o.name === f)) && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {activeFilters
-                    .filter(f => category.options.some(o => o.name === f))
-                    .map((filter, j) => (
-                      <span key={j} className="text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded-full">
-                        {filter}
-                      </span>
-                    ))}
-                </div>
-              )}
-            </motion.div>
-          ))}
+                {/* {activeFiltersInCategory.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-xs text-gray-600 truncate">
+                      {activeFiltersInCategory.join(', ')}
+                    </p>
+                  </div>
+                )} */}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
@@ -303,10 +312,10 @@ const Home = () => {
         {/* Featured Models Section */}
         {!selectedModel && (
           <div className="mb-10">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
               Popular Models
             </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+            <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4">
               {models.slice(0, 16).map(model => (
                 <motion.div
                   key={`featured-${model.id}`}
@@ -323,7 +332,7 @@ const Home = () => {
                       loading="lazy"
                     />
                   </div>
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white text-center line-clamp-1">
+                  <h3 className="text-sm font-medium text-gray-900 text-center line-clamp-1">
                     {model.name}
                   </h3>
                   <div className="flex items-center text-xs text-yellow-500 mt-1">
@@ -339,7 +348,7 @@ const Home = () => {
         {/* Recommended For You Section */}
         <div className="mb-10">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold text-gray-900">
               {selectedModel
                 ? `${models.find(m => m.id === selectedModel)?.name}'s Videos`
                 : selectedCategory === 'all'
@@ -351,7 +360,7 @@ const Home = () => {
             {filteredVideos.length > 0 && (
               <button 
                 onClick={() => navigate(selectedModel ? `/model/${selectedModel}` : `/category/${selectedCategory}`)}
-                className="text-sm text-pink-600 dark:text-pink-400 hover:underline"
+                className="text-sm text-pink-600 hover:underline"
               >
                 View All
               </button>
@@ -360,17 +369,17 @@ const Home = () => {
 
           {/* Video Grid - 4 per row */}
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-1.5 gap-y-6">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={`skeleton-${i}`} className="animate-pulse">
-                  <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-lg mb-3"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2 w-3/4"></div>
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                  <div className="aspect-video bg-gray-200 rounded-lg mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                 </div>
               ))}
             </div>
           ) : filteredVideos.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-1.5 gap-y-6">
               {filteredVideos.slice(0, 12).map(video => (
                 <motion.div
                   key={video.id}
@@ -406,16 +415,16 @@ const Home = () => {
 
                   {/* Video Info */}
                   <div className="mt-3">
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2">
+                    <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
                       {video.title}
                     </h3>
                     <div className="flex justify-between items-center mt-2">
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                      <p className="text-xs text-gray-600">
                         {video.channel} • {video.views}
                       </p>
                       <button 
                         onClick={(e) => toggleFavorite(video.id, e)}
-                        className="text-gray-400 hover:text-pink-600 dark:hover:text-pink-400"
+                        className="text-gray-400 hover:text-pink-600"
                       >
                         {favorites.includes(video.id) ? (
                           <FaHeart className="text-pink-600" />
@@ -429,12 +438,12 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-lg">
+            <div className="text-center py-16 bg-white rounded-lg">
               <div className="text-6xl mb-4">🎥</div>
-              <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="text-xl font-medium text-gray-900 mb-2">
                 No content found
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-gray-600 mb-6">
                 Try different filters or check back later
               </p>
               <motion.button
@@ -454,34 +463,36 @@ const Home = () => {
         </div>
 
         {/* Email Subscription - Moved below content */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
           <div className="flex flex-col items-center text-center">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+            <h3 className="text-xl font-bold text-gray-900 mb-3">
               Stay Updated
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-md">
+            <p className="text-sm text-gray-600 mb-6 max-w-md">
               Subscribe to our newsletter for weekly updates on new models and content
             </p>
             {isSubscribed ? (
-              <div className="px-6 py-3 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-lg text-sm">
+              <div className="px-6 py-3 bg-green-100 text-green-800 rounded-lg text-sm">
                 Thank you for subscribing!
               </div>
             ) : (
-              <form onSubmit={handleSubscribe} className="flex w-full max-w-md">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email address"
-                  className="flex-grow px-4 py-3 rounded-l-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
-                  required
-                />
-                <button 
-                  type="submit"
-                  className="px-6 py-3 bg-pink-600 text-white rounded-r-lg font-medium hover:bg-pink-700 transition-colors"
-                >
-                  Subscribe
-                </button>
+              <form onSubmit={handleSubscribe} className="w-full max-w-md">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your email address"
+                    className="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    required
+                  />
+                  <button 
+                    type="submit"
+                    className="px-6 py-3 bg-pink-600 text-white rounded-lg font-medium hover:bg-pink-700 transition-colors"
+                  >
+                    Subscribe
+                  </button>
+                </div>
               </form>
             )}
           </div>
@@ -502,20 +513,30 @@ const Home = () => {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md max-h-[80vh] overflow-y-auto"
+              className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[80vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  <h3 className="text-xl font-bold text-gray-900">
                     {currentFilterModal.title}
                   </h3>
-                  <button 
-                    onClick={() => setCurrentFilterModal(null)}
-                    className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                  >
-                    ✕
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {activeFilters.length > 0 && (
+                      <button 
+                        onClick={clearAllFilters}
+                        className="text-sm text-pink-600 hover:underline"
+                      >
+                        Clear All
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => setCurrentFilterModal(null)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      <FaTimes />
+                    </button>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {currentFilterModal.options.map((option, i) => (
@@ -525,14 +546,14 @@ const Home = () => {
                       onClick={() => toggleFilter(option.name)}
                       className={`flex items-center p-3 rounded-lg border ${
                         activeFilters.includes(option.name)
-                          ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
-                          : 'border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+                          ? 'border-pink-500 bg-pink-50'
+                          : 'border-gray-200 hover:bg-gray-100'
                       }`}
                     >
                       <div className="mr-3 text-lg">
                         {option.icon}
                       </div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      <span className="text-sm font-medium text-gray-900">
                         {option.name}
                       </span>
                     </motion.button>
