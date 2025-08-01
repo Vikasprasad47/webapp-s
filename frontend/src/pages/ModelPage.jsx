@@ -405,8 +405,8 @@ const ModelPage = () => {
           </div>
         )}
       </div>
-    </div>
-  );
+    </div> 
+  ); 
 };
 
 export default ModelPage;
