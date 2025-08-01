@@ -81,6 +81,9 @@ const Home = () => {
   const [favorites, setFavorites] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
   const [currentFilterModal, setCurrentFilterModal] = useState(null);
+  const [visibleModels, setVisibleModels] = useState(16); // Assuming 8 models per row × 2 rows
+  const initialVisibleModels = 16;
+  const modelsPerClick = 16; // Load 2 more rows each click
 
   // Generate more realistic mock data
   useEffect(() => {
@@ -312,39 +315,49 @@ const Home = () => {
 
         {/* Featured Models Section */}
         {!selectedModel && (
-          <div className="mb-10">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              Popular Models
-            </h2>
-            <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-              {models.slice(0, 16).map(model => (
-                <motion.div
-                  key={`featured-${model.id}`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleModelClick(model.id)}
-                  className="flex flex-col items-center cursor-pointer"
-                >
-                  <div className="relative mb-2 w-full aspect-square">
-                    <img
-                      src={model.image}
-                      alt={model.name}
-                      className="w-full h-full object-cover rounded-lg"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h3 className="text-sm font-medium text-gray-900 text-center line-clamp-1">
-                    {model.name}
-                  </h3>
-                  <div className="flex items-center text-xs text-yellow-500 mt-1">
-                    <FaStar className="mr-1" />
-                    {model.rating}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+  <div className="mb-10">
+    <h2 className="text-xl font-bold text-gray-900 mb-6">
+      Popular Models
+    </h2>
+    <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+      {models.slice(0, visibleModels).map(model => (
+        <motion.div
+          key={`featured-${model.id}`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => handleModelClick(model.id)}
+          className="flex flex-col items-center cursor-pointer"
+        >
+          <div className="relative mb-2 w-full aspect-square">
+            <img
+              src={model.image}
+              alt={model.name}
+              className="w-full h-full object-cover rounded-lg"
+              loading="lazy"
+            />
           </div>
-        )}
+          <h3 className="text-sm font-medium text-gray-900 text-center line-clamp-1">
+            {model.name}
+          </h3>
+          <div className="flex items-center text-xs text-yellow-500 mt-1">
+            <FaStar className="mr-1" />
+            {model.rating}
+          </div>
+        </motion.div>
+      ))}
+    </div>
+    {models.length > initialVisibleModels && (
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => setVisibleModels(prev => prev + modelsPerClick)}
+          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-800 font-medium transition-colors"
+        >
+          {visibleModels >= models.length ? 'Show Less' : 'Load More'}
+        </button>
+      </div>
+    )}
+  </div>
+)}
 
         {/* Recommended For You Section */}
         <div className="mb-10">

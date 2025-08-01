@@ -598,25 +598,6 @@ const VideoPage = () => {
             {/* Right Sidebar */}
             <div className="hidden lg:block w-80 flex-shrink-0">
               <div className="sticky top-4 space-y-4">
-                {/* Creator Info */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden">
-                      <img
-                        src={`https://xsgames.co/randomusers/assets/avatars/female/${id % 50 + 1}.jpg`}
-                        alt={state.video.channel}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-gray-900">{state.video.channel}</h3>
-                      <p className="text-xs text-gray-600">Model</p>
-                    </div>
-                  </div>
-                  <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 py-2 rounded-lg text-sm font-medium transition-colors">
-                    Follow
-                  </button>
-                </div>
 
                 {/* Comments Section */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">

@@ -88,7 +88,7 @@ const Header = () => {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center text-2xl font-bold tracking-tighter focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 rounded"
+            className="flex items-center text-2xl font-bold tracking-tighter rounded"
             aria-label="Home"
           >
             <span className="bg-gradient-to-r from-pink-500 to-red-500 bg-clip-text text-transparent">
